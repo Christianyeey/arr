@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para el amor de mi vida</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f5ee;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            position: relative;
+            width: 700px;
+            max-width: 95vw;
+            min-height: 600px;
+            background: #fffdfa;
+            border-radius: 32px;
+            box-shadow: 0 4px 32px 0 rgba(0,0,0,0.10);
+            text-align: center;
+            padding-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 2em;
+            color: #666;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            text-align: left;
+            padding-left: 32px;
+        }
+
+        .minecraft-heart {
+            width: 120px;
+            height: 120px;
+            margin: 60px auto;
+            position: relative;
+            cursor: pointer;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .pixel {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #FF0000;
+        }
+
+        .pixel.dark {
+            background-color: #CC0000;
+        }
+
+        .message {
+            position: absolute;
+            font-size: 2em;
+            color: #FF69B4;
+            opacity: 0;
+            transition: all 0.3s ease-out;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+
+        .message.visible {
+            opacity: 1;
+        }
+
+        @keyframes floatIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes floatOut {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-20px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .counter-text {
+            font-size: 1.1em;
+            color: #aaa;
+            margin-top: 30px;
+            text-align: left;
+            padding-left: 32px;
+        }
+
+        .counter {
+            font-size: 1.7em;
+            color: #888;
+            margin-top: 2px;
+            text-align: left;
+            padding-left: 32px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .line {
+            width: 95%;
+            height: 2px;
+            background-color: #d3d3d3;
+            margin: 30px auto 0 auto;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Para el amor de mi vida:</h1>
+        <div class="minecraft-heart" id="heart"></div>
+        <div class="message" id="message">Te amo ❤️</div>
+        <p class="counter-text">Mi amor por ti comenzó hace...</p>
+        <p class="counter" id="counter"></p>
+        <div class="line"></div>
+    </div>
+
+    <script>
+        function createMinecraftHeart() {
+            const heart = document.getElementById('heart');
+            const pattern = [
+                [0,1,1,0,1,1,0],
+                [1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1],
+                [0,1,1,1,1,1,0],
+                [0,0,1,1,1,0,0],
+                [0,0,0,1,0,0,0]
+            ];
+
+            for(let y = 0; y < pattern.length; y++) {
+                for(let x = 0; x < pattern[y].length; x++) {
+                    if(pattern[y][x]) {
+                        const pixel = document.createElement('div');
+                        pixel.className = 'pixel' + (Math.random() > 0.5 ? ' dark' : '');
+                        pixel.style.left = (x * 20) + 'px';
+                        pixel.style.top = (y * 20) + 'px';
+                        heart.appendChild(pixel);
+                    }
+                }
+            }
+        }
+
+        function setupHeartClick() {
+            const heart = document.getElementById('heart');
+            const container = document.querySelector('.container');
+            let messages = [];
+            const texts = [
+                "Te amo ❤️",
+                "Mi amor ❤️",
+                "Para siempre ❤️",
+                "Eres mi todo ❤️",
+                "Mi vida ❤️"
+            ];
+
+            heart.addEventListener('click', () => {
+                // Reiniciar animación del corazón
+                heart.style.animation = 'none';
+                heart.offsetHeight;
+                heart.style.animation = 'pulse 1.5s ease-in-out infinite';
+
+                // Crear nuevo mensaje
+                const message = document.createElement('div');
+                message.className = 'message';
+                message.textContent = texts[Math.floor(Math.random() * texts.length)];
+
+                // Posición aleatoria dentro del contenedor
+                const containerRect = container.getBoundingClientRect();
+                const padding = 20; // Espacio del borde
+                const x = Math.random() * (containerRect.width - padding * 2) + padding;
+                const y = Math.random() * (containerRect.height - padding * 2) + padding;
+
+                message.style.left = x + 'px';
+                message.style.top = y + 'px';
+                message.style.animation = 'floatIn 0.3s ease-out forwards';
+
+                container.appendChild(message);
+                messages.push(message);
+
+                // Eliminar el mensaje después de 2 segundos
+                setTimeout(() => {
+                    message.style.animation = 'floatOut 0.3s ease-out forwards';
+                    setTimeout(() => {
+                        container.removeChild(message);
+                        messages = messages.filter(m => m !== message);
+                    }, 300);
+                }, 2000);
+            });
+        }
+
+        // Crear el corazón y configurar el clic
+        createMinecraftHeart();
+        setupHeartClick();
+
+        // --- Contador ---
+        const now = new Date();
+        const targetDays = 366;
+        const targetHours = 19;
+        const targetMinutes = 4;
+        const targetSeconds = 1;
+        const millisecondsToSubtract = 
+            (targetDays * 24 * 60 * 60 * 1000) +
+            (targetHours * 60 * 60 * 1000) +
+            (targetMinutes * 60 * 1000) +
+            (targetSeconds * 1000);
+        const startDate = new Date(now.getTime() - millisecondsToSubtract);
+
+        function updateCounter() {
+            const now = new Date();
+            const diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById('counter').textContent = 
+                `${days} días ${hours} horas ${minutes} minutos ${seconds} segundos`;
+        }
+
+        updateCounter();
+        setInterval(updateCounter, 1000);
+    </script>
+</body>
+</html>
